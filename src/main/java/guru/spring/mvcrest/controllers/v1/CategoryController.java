@@ -1,4 +1,4 @@
-package guru.spring.mvcrest.api.controllers.v1;
+package guru.spring.mvcrest.controllers.v1;
 
 import guru.spring.mvcrest.api.v1.model.CategoryDTO;
 import guru.spring.mvcrest.api.v1.model.CategoryListDTO;

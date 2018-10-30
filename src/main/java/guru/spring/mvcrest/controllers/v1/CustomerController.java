@@ -1,4 +1,4 @@
-package guru.spring.mvcrest.api.controllers.v1;
+package guru.spring.mvcrest.controllers.v1;
 
 import guru.spring.mvcrest.api.v1.model.CustomerDTO;
 import guru.spring.mvcrest.api.v1.model.CustomerListDTO;
@@ -25,9 +25,14 @@ public class CustomerController {
         return new ResponseEntity<CustomerListDTO>(
                 new CustomerListDTO(customerService.getAllCustomers()), HttpStatus.OK );
     }
+//
+//    @GetMapping("/{name}")
+//    private ResponseEntity<CustomerDTO> getCustomerByName(@PathVariable String name){
+//        return new ResponseEntity<CustomerDTO>(customerService.getCustomerByLastName(name), HttpStatus.OK);
+//    }
 
-    @GetMapping("/{name}")
-    private ResponseEntity<CustomerDTO> getCustomerByName(@PathVariable String name){
-        return new ResponseEntity<CustomerDTO>(customerService.findByName(name), HttpStatus.OK);
+    @GetMapping("{id}")
+    private ResponseEntity<CustomerDTO> getCustomerId(@PathVariable Long id){
+        return new ResponseEntity<CustomerDTO>(customerService.getCustomerById(id), HttpStatus.OK);
     }
 }
