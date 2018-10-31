@@ -22,4 +22,12 @@ public class CustomerMapperTest {
 
         assertEquals(NAME, customerDTO.getLastName());
     }
+
+    @Test
+    public void customerDtoToCustomer() {
+
+        //todo
+    }
+
+
 }

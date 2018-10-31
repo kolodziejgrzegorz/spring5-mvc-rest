@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -58,5 +59,25 @@ public class CustomerServiceTest {
 
         assertEquals("Michale", customerDTO.getFirstName());
 
+    }
+
+    @Test
+    public void createNewCustomer() {
+
+        CustomerDTO customer1 = new CustomerDTO();
+        customer1.setFirstName("Michale");
+        customer1.setLastName("Weston");
+
+        Customer savedCustomer = new Customer();
+        savedCustomer.setFirstName("Michale");
+        savedCustomer.setLastName("Weston");
+        savedCustomer.setId(1L);
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        CustomerDTO savedDto = customerService.createNewCustomer(customer1);
+
+        assertEquals(customer1.getFirstName(), savedDto.getFirstName());
+        assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
     }
 }
