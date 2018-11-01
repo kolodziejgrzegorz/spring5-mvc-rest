@@ -2,6 +2,7 @@ package guru.spring.mvcrest.services;
 
 import guru.spring.mvcrest.api.v1.mapper.CustomerMapper;
 import guru.spring.mvcrest.api.v1.model.CustomerDTO;
+import guru.spring.mvcrest.controllers.v1.CustomerController;
 import guru.spring.mvcrest.domain.Customer;
 import guru.spring.mvcrest.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(customer -> {
                     CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
-                    customerDTO.setCustomerUrl("api/v1/customers/" + customer.getId());
+                    customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
                     return customerDTO;
                 })
                 .collect(Collectors.toList());
@@ -36,7 +37,11 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
                 .map(customerMapper::customerToCustomerDTO)
-                .orElseThrow(RuntimeException::new);
+                .map(customerDTO -> {
+                    customerDTO.setCustomerUrl(getCustomerUrl(id));
+                    return customerDTO;
+                })
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -64,10 +69,10 @@ public class CustomerServiceImpl implements CustomerService {
             }
 
             CustomerDTO returnDto = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
-            returnDto.setCustomerUrl("/api/v1/customers/" + id);
+            returnDto.setCustomerUrl(getCustomerUrl(id));
 
             return returnDto;
-        }).orElseThrow(RuntimeException::new);
+        }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -75,10 +80,14 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(id);
     }
 
+    private String getCustomerUrl(Long id){
+        return CustomerController.BASE_URL + "/" + id;
+    }
+
     private CustomerDTO saveAndReturnDTO(Customer customer){
         Customer savedCustomer = customerRepository.save(customer);
         CustomerDTO returnDto = customerMapper.customerToCustomerDTO(savedCustomer);
-        returnDto.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+        returnDto.setCustomerUrl(getCustomerUrl(savedCustomer.getId()));
         return returnDto;
     }
 }

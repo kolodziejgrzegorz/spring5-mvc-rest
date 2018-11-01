@@ -2,6 +2,7 @@ package guru.spring.mvcrest.services;
 
 import guru.spring.mvcrest.api.v1.mapper.CustomerMapper;
 import guru.spring.mvcrest.api.v1.model.CustomerDTO;
+import guru.spring.mvcrest.controllers.v1.CustomerController;
 import guru.spring.mvcrest.domain.Customer;
 import guru.spring.mvcrest.repository.CustomerRepository;
 import org.junit.Before;
@@ -79,7 +80,7 @@ public class CustomerServiceTest {
         CustomerDTO savedDto = customerService.createNewCustomer(customer1);
 
         assertEquals(customer1.getFirstName(), savedDto.getFirstName());
-        assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
+        assertEquals(CustomerController.BASE_URL + "/1", savedDto.getCustomerUrl());
     }
 
     @Test
