@@ -2,28 +2,41 @@ package guru.spring.mvcrest.bootstrap;
 
 import guru.spring.mvcrest.domain.Category;
 import guru.spring.mvcrest.domain.Customer;
+import guru.spring.mvcrest.domain.Vendor;
 import guru.spring.mvcrest.repository.CategoryRepository;
 import guru.spring.mvcrest.repository.CustomerRepository;
+import guru.spring.mvcrest.repository.VendorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
 
-    private CategoryRepository categoryRepository;
-    private CustomerRepository customerRepository;
+    private final CategoryRepository categoryRepository;
+    private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
-    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
         loadCategories();
-
         loadCustomers();
+        loadVendors();
+    }
 
+    private void loadVendors(){
+        Vendor vendor1 = new Vendor();
+        vendor1.setName("Vendor One");
+        vendorRepository.save(vendor1);
+
+        Vendor vendor2 = new Vendor();
+        vendor2.setName("Vendor Two");
+        vendorRepository.save(vendor2);
     }
 
     private void loadCustomers() {

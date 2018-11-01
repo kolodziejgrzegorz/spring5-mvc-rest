@@ -1,84 +1,74 @@
 package guru.spring.mvcrest.controllers.v1;
 
 import guru.spring.mvcrest.api.v1.model.VendorDTO;
-import guru.spring.mvcrest.controllers.RestResponseEntityExceptionHandler;
+import guru.spring.mvcrest.api.v1.model.VendorListDTO;
 import guru.spring.mvcrest.services.ResourceNotFoundException;
 import guru.spring.mvcrest.services.VendorService;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static guru.spring.mvcrest.controllers.v1.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = {VendorController.class})
 public class VendorControllerTest {
 
-    public static final String NAME = "Name";
-    public static final Long ID = 2L;
-
-    @Mock
+    @MockBean
     VendorService vendorService;
 
-    @InjectMocks
-    VendorController vendorController;
-
+    @Autowired
     MockMvc mockMvc;
+
+    VendorDTO vendorDTO_1;
+    VendorDTO vendorDTO_2;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(vendorController)
-                .setControllerAdvice(new RestResponseEntityExceptionHandler())
-                .build();
+        vendorDTO_1 = new VendorDTO("vendor 1",VendorController.BASE_URL + "/1");
+        vendorDTO_2 = new VendorDTO("vendor 2",VendorController.BASE_URL + "/2");
     }
 
     @Test
-    public void getAllVendors() throws Exception {
-        VendorDTO vendor = new VendorDTO();
-        vendor.setName("vendor1");
+    public void getVendorList() throws Exception {
 
-        VendorDTO vendor2 = new VendorDTO();
-        vendor2.setName("vendor2");
+        VendorListDTO vendorListDTO = new VendorListDTO(Arrays.asList(vendorDTO_1, vendorDTO_2));
 
-        List<VendorDTO> vendorDTOS = Arrays.asList(vendor, vendor2);
-
-        when(vendorService.getAllVendors()).thenReturn(vendorDTOS);
+        given(vendorService.getAllVendors()).willReturn(vendorListDTO);
 
         mockMvc.perform(get(VendorController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.vendors", hasSize(2)));
+                .andExpect(jsonPath("$.vendors",hasSize(2)));
     }
 
     @Test
     public void getVendorById() throws Exception {
 
-        VendorDTO vendor = new VendorDTO();
-        vendor.setName(NAME);
-        vendor.setVendorUrl(VendorController.BASE_URL + "/1");
-
-        when(vendorService.getVendorById(anyLong())).thenReturn(vendor);
+        given(vendorService.getVendorById(anyLong())).willReturn(vendorDTO_1);
 
         mockMvc.perform(get(VendorController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", equalTo(NAME)));
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())));
     }
 
     @Test
@@ -93,60 +83,38 @@ public class VendorControllerTest {
     @Test
     public void createNewVendor() throws Exception {
 
-        VendorDTO vendor = new VendorDTO();
-        vendor.setName("vendor1");
-
-        VendorDTO returnDto = new VendorDTO();
-        returnDto.setName("vendor1");
-        returnDto.setVendorUrl(VendorController.BASE_URL + "/1");
-
-        when(vendorService.createNewVendor(vendor)).thenReturn(returnDto);
+        given(vendorService.createNewVendor(vendorDTO_1)).willReturn(vendorDTO_1);
 
         mockMvc.perform(post(VendorController.BASE_URL )
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendor)))
+                .content(asJsonString(vendorDTO_1)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", equalTo("vendor1")))
-                .andExpect(jsonPath("$.vendor_url",equalTo(VendorController.BASE_URL + "/1")));
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())))
+                .andExpect(jsonPath("$.vendor_url",equalTo(vendorDTO_1.getVendorUrl())));
     }
 
     @Test
     public void updateVendor() throws Exception {
 
-        VendorDTO vendor1 = new VendorDTO();
-        vendor1.setName("vendor1");
-
-        VendorDTO returnDto = new VendorDTO();
-        returnDto.setName("vendor1");
-        returnDto.setVendorUrl(VendorController.BASE_URL + "/1");
-
-        when(vendorService.saveVendorByDTO(anyLong(), any(VendorDTO.class))).thenReturn(returnDto);
+        given(vendorService.saveVendorByDTO(anyLong(), any(VendorDTO.class))).willReturn(vendorDTO_1);
 
         mockMvc.perform(put(VendorController.BASE_URL + "/1" )
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendor1)))
+                .content(asJsonString(vendorDTO_1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", equalTo("vendor1")))
-                .andExpect(jsonPath("$.vendor_url",equalTo(VendorController.BASE_URL + "/1")));
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())));
     }
 
     @Test
     public void patchVendor() throws Exception {
 
-        VendorDTO vendor1 = new VendorDTO();
-
-        VendorDTO returnDto = new VendorDTO();
-        returnDto.setName("vendor1");
-        returnDto.setVendorUrl(VendorController.BASE_URL + "/1");
-
-        when(vendorService.patchVendor(anyLong(), any(VendorDTO.class))).thenReturn(returnDto);
+        given(vendorService.patchVendor(anyLong(), any(VendorDTO.class))).willReturn(vendorDTO_1);
 
         mockMvc.perform(patch(VendorController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendor1)))
+                .content(asJsonString(vendorDTO_1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", equalTo("vendor1")))
-                .andExpect(jsonPath("$.vendor_url",equalTo(VendorController.BASE_URL + "/1")));
+                .andExpect(jsonPath("$.name", equalTo(vendorDTO_1.getName())));
     }
 
     @Test
@@ -156,6 +124,6 @@ public class VendorControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(vendorService).deleteById(anyLong());
+        then(vendorService).should().deleteById(anyLong());
     }
 }

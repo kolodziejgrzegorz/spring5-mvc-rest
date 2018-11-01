@@ -19,13 +19,13 @@ public class CustomerController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CustomerListDTO getAllCustomers(){
+    public CustomerListDTO getCustomerList(){
         return new CustomerListDTO(customerService.getAllCustomers());
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CustomerDTO getCustomerId(@PathVariable Long id){
+    public CustomerDTO getCustomerById(@PathVariable Long id){
         return customerService.getCustomerById(id);
     }
 

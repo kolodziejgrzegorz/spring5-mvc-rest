@@ -2,6 +2,7 @@ package guru.spring.mvcrest.services;
 
 import guru.spring.mvcrest.api.v1.mapper.VendorMapper;
 import guru.spring.mvcrest.api.v1.model.VendorDTO;
+import guru.spring.mvcrest.api.v1.model.VendorListDTO;
 import guru.spring.mvcrest.controllers.v1.VendorController;
 import guru.spring.mvcrest.domain.Vendor;
 import guru.spring.mvcrest.repository.VendorRepository;
@@ -22,8 +23,8 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public List<VendorDTO> getAllVendors() {
-        return vendorRepository.findAll()
+    public VendorListDTO getAllVendors() {
+        List<VendorDTO> vendorDTOS = vendorRepository.findAll()
                 .stream()
                 .map(vendor -> {
                     VendorDTO vendorDTO = vendorMapper.vendorToVendorDTO(vendor);
@@ -31,6 +32,7 @@ public class VendorServiceImpl implements VendorService {
                     return vendorDTO;
                 })
                 .collect(Collectors.toList());
+        return new VendorListDTO(vendorDTOS);
     }
 
     @Override

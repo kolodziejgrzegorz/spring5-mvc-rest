@@ -19,13 +19,13 @@ public class VendorController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public VendorListDTO getAllVendors(){
-        return new VendorListDTO(vendorService.getAllVendors());
+    public VendorListDTO getVendorList(){
+        return vendorService.getAllVendors();
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public VendorDTO getVendorId(@PathVariable Long id){
+    public VendorDTO getVendorById(@PathVariable Long id){
         return vendorService.getVendorById(id);
     }
 

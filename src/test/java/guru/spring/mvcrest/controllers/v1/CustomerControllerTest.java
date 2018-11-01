@@ -49,7 +49,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void getAllCustomers() throws Exception {
+    public void getCustomerList() throws Exception {
         CustomerDTO customer = new CustomerDTO();
         customer.setFirstName("Jan");
         customer.setLastName("Kowalski");

@@ -1,12 +1,11 @@
 package guru.spring.mvcrest.services;
 
 import guru.spring.mvcrest.api.v1.model.VendorDTO;
-
-import java.util.List;
+import guru.spring.mvcrest.api.v1.model.VendorListDTO;
 
 public interface VendorService {
 
-    List<VendorDTO> getAllVendors();
+    VendorListDTO getAllVendors();
 
     VendorDTO getVendorById(Long id);
 
