@@ -98,7 +98,7 @@ public class VendorServiceTest {
     }
 
     @Test
-    public void deleteVendorbyId(){
+    public void deleteVendorById(){
 
         Long id = 1L;
         vendorService.deleteById(id);

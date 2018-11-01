@@ -103,7 +103,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void deleteCustomerbyId(){
+    public void deleteCustomerById(){
 
         Long id = 1L;
         customerService.deleteById(id);
