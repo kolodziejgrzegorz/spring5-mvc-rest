@@ -26,7 +26,12 @@ public class CustomerMapperTest {
     @Test
     public void customerDtoToCustomer() {
 
-        //todo
+        CustomerDTO vendorDTO = new CustomerDTO();
+        vendorDTO.setLastName(NAME);
+
+        Customer vendor = customerMapper.customerDtoToCustomer(vendorDTO);
+
+        assertEquals(NAME, vendor.getLastName());
     }
 
 
